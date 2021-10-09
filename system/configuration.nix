@@ -10,18 +10,11 @@
       ./hardware-configuration.nix
     ];
 
-  security = { 
-    pam.loginLimits = [{
-      domain = "-";
-      type = "-";
-      item = "nofile";
-      value = "1048576";
-    }]; 
-  };
-
+  environment.variables.EDITOR = "nvim";
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.cleanTmpDir = true;
   boot.extraModprobeConfig = '' options bluetooth disable_ertm=1 '';
 
   networking.hostName = "nixos"; # Define your hostname.
@@ -36,6 +29,10 @@
     Option "TearFree" "true"
   '';
 
+  services.xserver.displayManager.sessionCommands = ''
+    xrandr --output eDP --right-of HDMI-A-0
+  '';
+
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
@@ -48,7 +45,8 @@
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+   networking.proxy.default = "http://127.0.0.1:7890";
+   networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "zh_CN.UTF-8";
@@ -80,9 +78,10 @@
   };
 
   # Enable the Plasma 5 Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.displayManager.sddm.theme = "abstractdark-sddm-theme";
+  services.xserver.displayManager.gdm.enable = true;
+
   # services.xserver.desktopManager.plasma5.enable = true;
+  # services.xserver.displayManager.startx.enable = true;
   services.xserver.windowManager.dwm.enable = true;
 
   nixpkgs.overlays = [
@@ -127,7 +126,7 @@
   users.users.Octo = {
     isNormalUser = true;
     shell = pkgs.fish;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "video" ]; # Enable ‘sudo’ for the user.
   };
 
   nix = {
@@ -138,6 +137,7 @@
    };
 
   programs.steam.enable = true;
+  programs.light.enable = true;
   nixpkgs.config.allowUnfree = true;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -151,7 +151,7 @@
     picom
     fcitx5
     ntfs3g
-    firefox
+    sddm-kcm
     harfbuzz
     qbittorrent
     (st.overrideAttrs (oldAttrs: rec {

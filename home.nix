@@ -34,7 +34,7 @@
     #tool
     vim git wget fish clash rofi ranger emacs fd fzf
     youtube-dl vscode-fhs imagemagick scrot wine vsftpd
-    ffmpeg aria rebar3 zip unzip unrar 
+    ffmpeg aria rebar3 zip unzip unrar p7zip
     
     #base
     iwd vlc feh xclip ntfs3g clang clang-tools cmake ninja
@@ -42,7 +42,7 @@
    
     #toy
     tree neofetch steam qbittorrent htop virtualbox sxiv
-   
+
     #lang
     erlang elixir lua rustup go clisp python
 
